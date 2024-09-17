@@ -125,23 +125,14 @@ def borrar_planeta_favorito(planeta_id):
     return jsonify({"msg": "Favorito eliminado"}), 200
 
 
+#FAVORITOS
 
-
-#FAVORITOS REVISAR Y MODIFICAR
-
-#obtengo todos los favoritos de planetas
+#obtengo todos los favoritos
 @app.route("/favoritos", methods=["GET"])
 def favoritos_list():
     favoritos= Favoritos.query.all()
     all_favoritos=list(map(lambda x: x.serialize(), favoritos))
     return jsonify(all_favoritos), 200
-
-#obtengo todos los favoritos de personajes
-# @app.route("/favoritos", methods=["GET"])
-# def favoritos_list():
-#     favoritos= Favoritos.query.all()
-#     all_favoritos=list(map(lambda x: x.serialize(), favoritos))
-#     return jsonify(all_favoritos), 200
 
 
 
