@@ -11,35 +11,60 @@ class User(db.Model):
 
     relation_favoritos = db.relationship ("Favoritos", backref="user")
 
+    def __repr__(self):
+        return  self.email
+    def serialize(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+          #agregar todas las comlumnas
+        }
 
-class Personajes(db.Model):
+
+class Personajes(db.Model): 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     lightsaber_user = db.Column(db.Boolean(),unique=False, nullable=False)
 
-    relation_favoritos = db.relationship ("Favoritos", backref="personajes")
+    def __repr__(self):
+        return  self.name
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+          #agregar todas las comlumnas
+        }
+
+    
 
 class Planetas(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
 
-    relation_favoritos = db.relationship ("Favoritos", backref="planetas")
-
-class Favoritos(db.Model):
-    id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    planeta_favorito = db.Column(db.Integer, db.ForeignKey('planetas.name'))
-    personaje_favorito = db.Column(db.Integer, db.ForeignKey('personajes.name'))
-
-    def to_dict(self):
-        return {}
-
-
     def __repr__(self):
-        return '<User %r>' % self.username
-
+        return  self.name
     def serialize(self):
         return {
             "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
+            "name": self.name,
+          #agregar todas las comlumnas
+        }
+
+class Favoritos(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    planeta_id = db.Column(db.Integer, db.ForeignKey('planetas.id'), nullable=True)
+    personaje_id = db.Column(db.Integer, db.ForeignKey('personajes.id'), nullable=True)
+
+  
+    planeta = db.relationship('Planetas', backref='favoritos')
+    personaje = db.relationship('Personajes', backref='favoritos')
+
+   
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "planeta_id": self.planeta_id,
+            "personaje_id": self.personaje_id
         }
