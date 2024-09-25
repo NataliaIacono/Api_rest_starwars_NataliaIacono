@@ -58,9 +58,9 @@ def personaje_list(id):
 
 #Agregar UN personaje
 @app.route("/favorite/people/<int:personaje_id>", methods=["POST"])
-def agregar_personaje(persona_id):
+def agregar_personaje(personaje_id):
     user_id = request.json.get("user_id")  # es la respuesta en formato json
-    favorito = Favoritos(user_id=user_id, personaje_id=persona_id)
+    favorito = Favoritos(user_id=user_id, personaje_id=personaje_id)
     
     db.session.add(favorito)
     db.session.commit()
@@ -135,6 +135,22 @@ def favoritos_list():
     return jsonify(all_favoritos), 200
 
 
+
+@app.route('/favoritos/<int:user_id>', methods=["GET"])
+def obtener_favoritos(user_id):
+
+    favoritos = Favoritos.query.filter_by(user_id=user_id).all()
+    
+    if not favoritos:
+        return jsonify({"error": "No hay favoritos para este usuario"}), 404
+
+    # favoritos_serializados = [favorito.serialize() for favorito in favoritos]
+
+    favoritos_serializados=[]
+    for favorito in favoritos:
+        favoritos_serializados.append(favorito.serialize())
+
+    return jsonify(favoritos_serializados), 200
 
 
 # this only runs if `$ python src/app.py` is executed
